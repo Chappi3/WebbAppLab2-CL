@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header/>
-    <Content msg="Welcome to Your Vue.js App"/>
+    <Content/>
     <Footer/>
   </div>
 </template>
