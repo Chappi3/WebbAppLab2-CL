@@ -1,17 +1,21 @@
 <template>
   <div class="main">
     <h1>Players</h1>
-    <div class="names">
-      <label for="Name">Name:</label>
-      <input type="text" name="Name" required>
-      <button type="submit">Add Player</button>
+    <div :key="player.id" v-for="player in players">
+      <Player :player="player"/>
     </div>
   </div>
 </template>
 
 <script>
+import Player from "./Player.vue";
+
 export default {
-  name: "Players"
+  name: "Players",
+  props: ["players"],
+  components: {
+    Player
+  }
 };
 </script>
 
