@@ -1,7 +1,7 @@
 <template>
   <div class="content" id="app">
     <AddPlayer v-on:add-player="addPlayer"/>
-    <Players v-bind:players="players"/>
+    <Players :players="players"/>
   </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     addPlayer(newPlayer) {
-      const { name } = newPlayer;
+      this.players = [...this.players, newPlayer];
     }
   }
 };

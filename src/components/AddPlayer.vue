@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import uuid from "uuid";
+
 export default {
   name: "AddPlayer",
   data() {
@@ -19,6 +21,7 @@ export default {
     addPlayer(e) {
       e.preventDefault();
       const newPlayer = {
+        id: uuid.v4(),
         name: this.name
       };
       this.$emit("add-player", newPlayer);
