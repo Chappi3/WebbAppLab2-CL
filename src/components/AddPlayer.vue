@@ -1,8 +1,9 @@
 <template>
   <div>
-    <form @submit="addPlayer">
+    <form class="addPlayerForm" @submit="addPlayer">
       <input type="text" v-model="name" name="name" placeholder="Name of player...">
-      <input type="submit" value="Add" class="btn">
+      <input type="submit" value="Add" class="btn" v-if="maxPlayers">
+      <!-- v-if:players.lenght<4 -->
     </form>
   </div>
 </template>
@@ -12,6 +13,10 @@ import uuid from "uuid";
 
 export default {
   name: "AddPlayer",
+  props: ["players"],
+  data: {
+    maxPlayers: true
+  },
   data() {
     return {
       name: ""
@@ -33,4 +38,8 @@ export default {
 </script>
 
 <style>
+.addPlayerForm {
+  margin: auto;
+  margin-top: 1rem;
+}
 </style>
