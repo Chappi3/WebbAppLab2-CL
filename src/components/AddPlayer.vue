@@ -3,7 +3,6 @@
     <form class="addPlayerForm" @submit="addPlayer">
       <input type="text" v-model="name" name="name" placeholder="Name of player...">
       <input type="submit" value="Add" class="btn">
-      <!-- v-if:players.lenght<4 -->
     </form>
   </div>
 </template>
