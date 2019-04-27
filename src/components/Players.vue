@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <h1>Players</h1>
+    <h1>Spelare</h1>
     <div :key="player.id" v-for="player in players">
       <Player :player="player"/>
     </div>
