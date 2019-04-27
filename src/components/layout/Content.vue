@@ -5,7 +5,7 @@
       <AddPlayer v-on:add-player="addPlayer" class="addPlayers"/>
     </div>
     <div v-if="players.length>0">
-      <GameBoard/>
+      <GameBoard :players="players"/>
     </div>
   </div>
 </template>

@@ -37,9 +37,13 @@
         </dl>
       </div>
       <div id="playerArea">
-        <div class="playerBoard player1" data-player="player1">
+        <div class="playerBoard player1">
           <div class="playerHead">
-            <h2>Spelare</h2>
+            <h2>
+              <div :key="player.id" v-for="player in players">
+                <Player :player="player"/>
+              </div>
+            </h2>
             <div class="score">
               <span>0</span> poäng
             </div>
@@ -61,11 +65,7 @@
               <label for="sixes">Sexor</label>
               <input type="number" id="sixes" name="sixes">
               <!-- Show when mouse is over & hide when it is'nt -->
-              <label
-                for="bonus"
-                @mouseenter="showBonus"
-                @mouseleave="hideBonus"
-              >Bonus</label>
+              <label for="bonus" @mouseenter="showBonus" @mouseleave="hideBonus">Bonus</label>
               <input
                 type="number"
                 id="bonus"
@@ -125,16 +125,21 @@
 
 <script>
 // import Name from "place/name.vue";
+import Player from "./Player.vue";
 
 export default {
   name: "GameBoard",
+  components: {
+    Player
+  },
+  props: ["players"],
   data: {
     rollsLeft: 3
   },
   data() {
     return {
       legendBonus: false
-    }
+    };
   },
   methods: {
     showBonus: function() {
