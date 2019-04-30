@@ -1,120 +1,353 @@
 <template>
   <div id="gameBoard">
     <div id="yahtzee">
-      <div id="gameLegend">
+      <aside id="gameLegend">
         <dl>
           <h2>Förklaringar</h2>
-          <dt>Ettor</dt>
-          <dd>max poäng 5</dd>
-          <dt>Tvåor</dt>
-          <dd>max poäng 10</dd>
-          <dt>Treor</dt>
-          <dd>max poäng 15</dd>
-          <dt>Fyror</dt>
-          <dd>max poäng 20</dd>
-          <dt>Femmor</dt>
-          <dd>max poäng 25</dd>
-          <dt>Sexor</dt>
-          <dd>max poäng 30</dd>
+          <dt v-if="legendOnes">Ettor</dt>
+          <dd v-if="legendOnes">max poäng 5</dd>
+          <dt v-if="legendTwos">Tvåor</dt>
+          <dd v-if="legendTwos">max poäng 10</dd>
+          <dt v-if="legendThrees">Treor</dt>
+          <dd v-if="legendThrees">max poäng 15</dd>
+          <dt v-if="legendFours">Fyror</dt>
+          <dd v-if="legendFours">max poäng 20</dd>
+          <dt v-if="legendFives">Femmor</dt>
+          <dd v-if="legendFives">max poäng 25</dd>
+          <dt v-if="legendSixes">Sexor</dt>
+          <dd v-if="legendSixes">max poäng 30</dd>
           <dt v-if="legendBonus">Bonus</dt>
           <dd
             v-if="legendBonus"
           >För att få bonus måste spelaren få minst 63 poäng i de sex översta villkoren (detta motsvarar i genomsnitt tre av varje villkor). Bonus ger alltid 50 poäng oavsett poängsumman</dd>
-          <dt>Ett par/Två par</dt>
-          <dd>Summan av paret/paren räknas. OBS! Kastet 4-4-4-4-6 räknas inte som två par. Båda paren måste vara olika.</dd>
-          <dt>Tretal/Fyrtal</dt>
-          <dd>Endast summan av lika tärningar räknas, t.ex.tre 4:or (=12 poäng) eller fyra 2:or (=8 poäng).</dd>
-          <dt>Liten stege</dt>
-          <dd>För att få liten stege (stege ibland kallat straight) skall tärningarna visa siffrorna 1, 2, 3, 4 och 5. Detta ger 15 poäng.</dd>
-          <dt>Stor stege</dt>
-          <dd>För att få stor stege skall tärningarna visa siffrorna 2, 3, 4, 5 och 6. Detta ger 20 poäng.</dd>
-          <dt>Kåk</dt>
-          <dd>För att få kåk skall tre av tärningarna visa ett och samma tal, samtidigt som övriga två ska visa ett och samma tal. Exempelvis 6, 6, 6, 4 och 4.</dd>
-          <dt>Chans</dt>
-          <dd>Chans innebär att man ska få så högt tal som möjligt när samtliga tärningsprickar räknas samman.</dd>
-          <dt>Yatzy</dt>
-          <dd>För att få yatzy skall alla tärningarna visa lika siffror. Yatzy ger alltid 50 poäng oavsett vilken siffra som tärningarna visar.</dd>
+          <dt v-if="legendPair">Ett par/Två par</dt>
+          <dd
+            v-if="legendPair"
+          >Summan av paret/paren räknas. OBS! Kastet 4-4-4-4-6 räknas inte som två par. Båda paren måste vara olika.</dd>
+          <dt v-if="legendOfaKind">Tretal/Fyrtal</dt>
+          <dd
+            v-if="legendOfaKind"
+          >Endast summan av lika tärningar räknas, t.ex.tre 4:or (=12 poäng) eller fyra 2:or (=8 poäng).</dd>
+          <dt v-if="legendSmallStraight">Liten stege</dt>
+          <dd
+            v-if="legendSmallStraight"
+          >För att få liten stege (stege ibland kallat straight) skall tärningarna visa siffrorna 1, 2, 3, 4 och 5. Detta ger 15 poäng.</dd>
+          <dt v-if="legendLargeStraight">Stor stege</dt>
+          <dd
+            v-if="legendLargeStraight"
+          >För att få stor stege skall tärningarna visa siffrorna 2, 3, 4, 5 och 6. Detta ger 20 poäng.</dd>
+          <dt v-if="legendFullHouse">Kåk</dt>
+          <dd
+            v-if="legendFullHouse"
+          >För att få kåk skall tre av tärningarna visa ett och samma tal, samtidigt som övriga två ska visa ett och samma tal. Exempelvis 6, 6, 6, 4 och 4.</dd>
+          <dt v-if="legendChance">Chans</dt>
+          <dd
+            v-if="legendChance"
+          >Chans innebär att man ska få så högt tal som möjligt när samtliga tärningsprickar räknas samman.</dd>
+          <dt v-if="legendYahtzee">Yatzy</dt>
+          <dd
+            v-if="legendYahtzee"
+          >För att få yatzy skall alla tärningarna visa lika siffror. Yatzy ger alltid 50 poäng oavsett vilken siffra som tärningarna visar.</dd>
         </dl>
-      </div>
+      </aside>
       <div id="playerArea">
-        <div class="playerBoard player1">
+        <div class="playerBoard">
           <div class="playerHead">
             <h2>
               <div :key="player.id" v-for="player in players">
                 <Player :player="player"/>
               </div>
             </h2>
+            <div>Runda: {{ round }}</div>
             <div class="score">
-              <span>0</span> poäng
+              <span>{{ score }}</span> poäng
             </div>
             <div class="clear"></div>
           </div>
           <div class="playerCard">
             <fieldset>
               <legend>Övre Sektion</legend>
-              <label for="ones">Ettor</label>
-              <input type="number" id="ones" name="ones">
-              <label for="twos">Tvåor</label>
-              <input type="number" id="twos" name="twos">
-              <label for="threes">Treor</label>
-              <input type="number" id="threes" name="threes">
-              <label for="fours">Fyror</label>
-              <input type="number" id="fours" name="fours">
-              <label for="fives">Femmor</label>
-              <input type="number" id="fives" name="fives">
-              <label for="sixes">Sexor</label>
-              <input type="number" id="sixes" name="sixes">
-              <!-- Show when mouse is over & hide when it is'nt -->
-              <label for="bonus" @mouseenter="showBonus" @mouseleave="hideBonus">Bonus</label>
+              <label
+                for="ones"
+                @mouseenter="legendOnes = !legendOnes"
+                @mouseleave="legendOnes = !legendOnes"
+              >Ettor</label>
+              <input
+                type="number"
+                id="ones"
+                name="ones"
+                readonly="true"
+                v-model="valueOnes"
+                @mouseenter="legendOnes = !legendOnes"
+                @mouseleave="legendOnes = !legendOnes"
+                @click="topSection(1)"
+              >
+              <label
+                for="twos"
+                @mouseenter="legendTwos = !legendTwos"
+                @mouseleave="legendTwos = !legendTwos"
+              >Tvåor</label>
+              <input
+                type="number"
+                id="twos"
+                name="twos"
+                readonly="true"
+                v-model="valueTwos"
+                @mouseenter="legendTwos = !legendTwos"
+                @mouseleave="legendTwos = !legendTwos"
+                @click="topSection(2)"
+              >
+              <label
+                for="threes"
+                @mouseenter="legendThrees = !legendThrees"
+                @mouseleave="legendThrees = !legendThrees"
+              >Treor</label>
+              <input
+                type="number"
+                id="threes"
+                name="threes"
+                readonly="true"
+                v-model="valueThrees"
+                @mouseenter="legendThrees = !legendThrees"
+                @mouseleave="legendThrees = !legendThrees"
+                @click="topSection(3)"
+              >
+              <label
+                for="fours"
+                @mouseenter="legendFours = !legendFours"
+                @mouseleave="legendFours = !legendFours"
+              >Fyror</label>
+              <input
+                type="number"
+                id="fours"
+                name="fours"
+                readonly="true"
+                v-model="valueFours"
+                @mouseenter="legendFours = !legendFours"
+                @mouseleave="legendFours = !legendFours"
+                @click="topSection(4)"
+              >
+              <label
+                for="fives"
+                @mouseenter="legendFives = !legendFives"
+                @mouseleave="legendFives = !legendFives"
+              >Femmor</label>
+              <input
+                type="number"
+                id="fives"
+                name="fives"
+                readonly="true"
+                v-model="valueFives"
+                @mouseenter="legendFives = !legendFives"
+                @mouseleave="legendFives = !legendFives"
+                @click="topSection(5)"
+              >
+              <label
+                for="sixes"
+                @mouseenter="legendSixes = !legendSixes"
+                @mouseleave="legendSixes = !legendSixes"
+              >Sexor</label>
+              <input
+                type="number"
+                id="sixes"
+                name="sixes"
+                readonly="true"
+                v-model="valueSixes"
+                @mouseenter="legendSixes = !legendSixes"
+                @mouseleave="legendSixes = !legendSixes"
+                @click="topSection(6)"
+              >
+              <label
+                for="bonus"
+                @mouseenter="legendBonus = !legendBonus"
+                @mouseleave="legendBonus = !legendBonus"
+              >Bonus</label>
               <input
                 type="number"
                 id="bonus"
                 name="bonus"
-                @mouseenter="showBonus"
-                @mouseleave="hideBonus"
+                readonly="true"
+                v-model="valueBonus"
+                @mouseenter="legendBonus = !legendBonus"
+                @mouseleave="legendBonus = !legendBonus"
               >
             </fieldset>
 
             <fieldset>
               <legend>Nedre Sektion</legend>
-              <label for="one-pair">Ett par</label>
-              <input type="number" id="one-pair" name="one-pair">
-              <label for="two-pair">Två par</label>
-              <input type="number" id="two-pair" name="two-pair">
-              <label for="three-of-a-kind">Tretal</label>
-              <input type="number" id="three-of-a-kind" name="three-of-a-kind">
-              <label for="four-of-a-kind">Fyrtal</label>
-              <input type="number" id="four-of-a-kind" name="four-of-a-kind">
-              <label for="smallStraight">Liten stege</label>
-              <input type="number" id="smallStraight" name="smallStraight">
-              <label for="largeStraight">Stor stege</label>
-              <input type="number" id="largeStraight" name="largeStraight">
-              <label for="fullHouse">kåk</label>
-              <input type="number" id="fullHouse" name="fullHouse">
-              <label for="chance">Chans</label>
-              <input type="number" id="chance" name="chance">
-              <label for="yahtzee-input">Yatzy</label>
-              <input type="number" id="yahtzee-input" name="yahtzee-input">
+              <label
+                for="one-pair"
+                @mouseenter="legendPair = !legendPair"
+                @mouseleave="legendPair = !legendPair"
+              >Ett par</label>
+              <input
+                type="number"
+                id="one-pair"
+                name="one-pair"
+                readonly="true"
+                v-model="valueOnePair"
+                @mouseenter="legendPair = !legendPair"
+                @mouseleave="legendPair = !legendPair"
+              >
+              <label
+                for="two-pair"
+                @mouseenter="legendPair = !legendPair"
+                @mouseleave="legendPair = !legendPair"
+              >Två par</label>
+              <input
+                type="number"
+                id="two-pair"
+                name="two-pair"
+                readonly="true"
+                v-model="valueTwoPair"
+                @mouseenter="legendPair = !legendPair"
+                @mouseleave="legendPair = !legendPair"
+              >
+              <label
+                for="three-of-a-kind"
+                @mouseenter="legendOfaKind = !legendOfaKind"
+                @mouseleave="legendOfaKind = !legendOfaKind"
+              >Tretal</label>
+              <input
+                type="number"
+                id="three-of-a-kind"
+                name="three-of-a-kind"
+                readonly="true"
+                v-model="valueThreeOfaKind"
+                @mouseenter="legendOfaKind = !legendOfaKind"
+                @mouseleave="legendOfaKind = !legendOfaKind"
+              >
+              <label
+                for="four-of-a-kind"
+                @mouseenter="legendOfaKind = !legendOfaKind"
+                @mouseleave="legendOfaKind = !legendOfaKind"
+              >Fyrtal</label>
+              <input
+                type="number"
+                id="four-of-a-kind"
+                name="four-of-a-kind"
+                readonly="true"
+                v-model="valueFourOfaKind"
+                @mouseenter="legendOfaKind = !legendOfaKind"
+                @mouseleave="legendOfaKind = !legendOfaKind"
+              >
+              <label
+                for="smallStraight"
+                @mouseenter="legendSmallStraight = !legendSmallStraight"
+                @mouseleave="legendSmallStraight = !legendSmallStraight"
+              >Liten stege</label>
+              <input
+                type="number"
+                id="smallStraight"
+                name="smallStraight"
+                readonly="true"
+                v-model="valueSmallStraight"
+                @mouseenter="legendSmallStraight = !legendSmallStraight"
+                @mouseleave="legendSmallStraight = !legendSmallStraight"
+              >
+              <label
+                for="largeStraight"
+                @mouseenter="legendLargeStraight = !legendLargeStraight"
+                @mouseleave="legendLargeStraight = !legendLargeStraight"
+              >Stor stege</label>
+              <input
+                type="number"
+                id="largeStraight"
+                name="largeStraight"
+                readonly="true"
+                v-model="valueLargeStraight"
+                @mouseenter="legendLargeStraight = !legendLargeStraight"
+                @mouseleave="legendLargeStraight = !legendLargeStraight"
+              >
+              <label
+                for="fullHouse"
+                @mouseenter="legendFullHouse = !legendFullHouse"
+                @mouseleave="legendFullHouse = !legendFullHouse"
+              >kåk</label>
+              <input
+                type="number"
+                id="fullHouse"
+                name="fullHouse"
+                readonly="true"
+                v-model="valueFullHouse"
+                @mouseenter="legendFullHouse = !legendFullHouse"
+                @mouseleave="legendFullHouse = !legendFullHouse"
+              >
+              <label
+                for="chance"
+                @mouseenter="legendChance = !legendChance"
+                @mouseleave="legendChance = !legendChance"
+              >Chans</label>
+              <input
+                type="number"
+                id="chance"
+                name="chance"
+                readonly="true"
+                v-model="valueChance"
+                @mouseenter="legendChance = !legendChance"
+                @mouseleave="legendChance = !legendChance"
+              >
+              <label
+                for="yahtzee-input"
+                @mouseenter="legendYahtzee = !legendYahtzee"
+                @mouseleave="legendYahtzee = !legendYahtzee"
+              >Yatzy</label>
+              <input
+                type="number"
+                id="yahtzee-input"
+                name="yahtzee-input"
+                readonly="true"
+                v-model="valueYahtzee"
+                @mouseenter="legendYahtzee = !legendYahtzee"
+                @mouseleave="legendYahtzee = !legendYahtzee"
+              >
             </fieldset>
           </div>
 
-          <div class="playerDice rollsLeft3">
-            <div class="die die1">
+          <div class="playerDice">
+            <div
+              class="die die1"
+              :class="{hold: dices[0].saved == true, roll1: dices[0].number == 1, roll2: dices[0].number == 2, roll3: dices[0].number == 3, roll4: dices[0].number == 4, roll5: dices[0].number == 5, roll6: dices[0].number == 6}"
+              @click="selectDice(0)"
+            >
               <span class="dot"></span>
             </div>
-            <div class="die die2">
+            <div
+              class="die die2"
+              :class="{hold: dices[1].saved == true, roll1: dices[1].number == 1, roll2: dices[1].number == 2, roll3: dices[1].number == 3, roll4: dices[1].number == 4, roll5: dices[1].number == 5, roll6: dices[1].number == 6}"
+              @click="selectDice(1)"
+            >
               <span class="dot"></span>
             </div>
-            <div class="die die3">
+            <div
+              class="die die3"
+              :class="{hold: dices[2].saved == true, roll1: dices[2].number == 1, roll2: dices[2].number == 2, roll3: dices[2].number == 3, roll4: dices[2].number == 4, roll5: dices[2].number == 5, roll6: dices[2].number == 6}"
+              @click="selectDice(2)"
+            >
               <span class="dot"></span>
             </div>
-            <div class="die die4">
+            <div
+              class="die die4"
+              :class="{hold: dices[3].saved == true, roll1: dices[3].number == 1, roll2: dices[3].number == 2, roll3: dices[3].number == 3, roll4: dices[3].number == 4, roll5: dices[3].number == 5, roll6: dices[3].number == 6}"
+              @click="selectDice(3)"
+            >
               <span class="dot"></span>
             </div>
-            <div class="die die5">
+            <div
+              class="die die5"
+              :class="{hold: dices[4].saved == true, roll1: dices[4].number == 1, roll2: dices[4].number == 2, roll3: dices[4].number == 3, roll4: dices[4].number == 4, roll5: dices[4].number == 5, roll6: dices[4].number == 6}"
+              @click="selectDice(4)"
+            >
               <span class="dot"></span>
             </div>
-            <button class="rollDice">Kasta</button>
+            <div>
+              Kast kvar: {{ rollsLeft }}
+              <button
+                class="rollDice"
+                @click="throwDice"
+                v-if="rollsLeft>0"
+              >Kasta</button>
+            </div>
           </div>
         </div>
       </div>
@@ -124,7 +357,6 @@
 </template>
 
 <script>
-// import Name from "place/name.vue";
 import Player from "./Player.vue";
 
 export default {
@@ -133,20 +365,229 @@ export default {
     Player
   },
   props: ["players"],
-  data: {
-    rollsLeft: 3
-  },
   data() {
     return {
-      legendBonus: false
+      legendOnes: false,
+      valueOnes: 0,
+      legendTwos: false,
+      valueTwos: 0,
+      legendThrees: false,
+      valueThrees: 0,
+      legendFours: false,
+      valueFours: 0,
+      legendFives: false,
+      valueFives: 0,
+      legendSixes: false,
+      valueSixes: 0,
+      legendBonus: false,
+      valueBonus: 0,
+      legendPair: false,
+      valueOnePair: 0,
+      valueTwoPair: 0,
+      legendOfaKind: false,
+      valueThreeOfaKind: 0,
+      valueFourOfaKind: 0,
+      legendSmallStraight: false,
+      valueSmallStraight: 0,
+      legendLargeStraight: false,
+      valueLargeStraight: 0,
+      legendFullHouse: false,
+      valueFullHouse: 0,
+      legendChance: false,
+      valueChance: 0,
+      legendYahtzee: false,
+      valueYahtzee: 0,
+      dices: [
+        {
+          number: 0,
+          saved: false
+        },
+        {
+          number: 0,
+          saved: false
+        },
+        {
+          number: 0,
+          saved: false
+        },
+        {
+          number: 0,
+          saved: false
+        },
+        {
+          number: 0,
+          saved: false
+        }
+      ],
+      rollsLeft: 3,
+      round: 1,
+      score: 0,
+      valueTopSection: 0
     };
   },
   methods: {
-    showBonus: function() {
-      this.legendBonus = true;
+    selectDice: function(dice) {
+      if (this.rollsLeft < 3) {
+        this.dices[dice].saved = !this.dices[dice].saved;
+      }
     },
-    hideBonus: function() {
-      this.legendBonus = false;
+    resetSelectedDices: function() {
+      for (let i = 0; i < this.dices.length; i++) {
+        this.dices[i].saved = false;
+      }
+    },
+    throwDice: function() {
+      let min = 1;
+      let max = 7;
+      for (let i = 0; i < this.dices.length; i++) {
+        if (this.dices[i].saved === false) {
+          this.dices[i].number =
+            Math.floor(Math.random() * (+max - +min)) + +min;
+        }
+      }
+      this.rollsLeft--;
+    },
+    checkDices: function(value) {
+      let containsNumber = false;
+      for (let i = 0; i < this.dices.length; i++) {
+        if (this.dices[i].number === value) {
+          containsNumber = true;
+        }
+      }
+      return containsNumber;
+    },
+    checkValues: function(value) {
+      let isValueZero = false;
+      switch (value) {
+        case 1:
+          if (this.valueOnes === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 2:
+          if (this.valueTwos === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 3:
+          if (this.valueThrees === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 4:
+          if (this.valueFours === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 5:
+          if (this.valueFives === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 6:
+          if (this.valueSixes === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        default:
+          console.log("checkValues - Switch - Something went wrong!");
+          break;
+      }
+      return isValueZero;
+    },
+    calculateBonus: function() {
+      let onesToSixes =
+        this.valueOnes +
+        this.valueTwos +
+        this.valueThrees +
+        this.valueFours +
+        this.valueFives +
+        this.valueSixes;
+      if (onesToSixes >= 63) {
+        this.valueBonus = 50;
+      }
+    },
+    calculateTopSection: function() {
+      this.valueTopSection =
+        this.valueOnes +
+        this.valueTwos +
+        this.valueThrees +
+        this.valueFours +
+        this.valueFives +
+        this.valueSixes +
+        this.valueBonus;
+    },
+    calculateTotalScore: function() {
+      this.calculateTopSection();
+      //this.calculateBottomSection();
+      this.score = this.valueTopSection;
+    },
+    topSection: function(value) {
+      // If player have hit throw once
+      // If the clicked box value is zero
+      // If any of the dices have the same number as the box clicked
+      if (
+        this.rollsLeft < 3 &&
+        this.checkValues(value) &&
+        this.checkDices(value)
+      ) {
+        let sum = 0;
+        for (let i = 0; i < 5; i++) {
+          if (this.dices[i].number === value) {
+            sum += this.dices[i].number;
+          }
+        }
+        switch (value) {
+          case 1:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueOnes = sum;
+            break;
+
+          case 2:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueTwos = sum;
+            break;
+
+          case 3:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueThrees = sum;
+            break;
+
+          case 4:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueFours = sum;
+            break;
+
+          case 5:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueFives = sum;
+            break;
+
+          case 6:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueSixes = sum;
+            break;
+
+          default:
+            console.log("topSection - Switch - Something went wrong!");
+            break;
+        }
+        this.calculateBonus();
+        this.resetSelectedDices();
+        this.calculateTotalScore();
+      }
     }
   }
 };
@@ -200,13 +641,11 @@ export default {
 }
 #yahtzee .playerBoard .playerHead h2 {
   display: block;
-  float: left;
   font-weight: bold;
   font-size: 1.5em;
 }
 #yahtzee .playerBoard .playerHead .score {
   display: block;
-  float: right;
 }
 #yahtzee .playerBoard .playerHead .score span {
   font-weight: bold;
@@ -232,7 +671,7 @@ export default {
 }
 
 #yahtzee .playerBoard .playerDice .die {
-  float: left;
+  display: grid;
   border: 1px solid #c3c3c3;
 }
 #yahtzee .playerBoard .playerDice .die.roll1 .dot {
