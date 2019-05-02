@@ -673,12 +673,40 @@ export default {
       }
     },
     bottomSection: function(box) {
-      // Todo: one pair, two pair, three kind, four kind, large, house, chance & yatzy
-      let correctCombo = false;
+      // Todo: one pair, two pair, three kind, four kind, house & yatzy
+      let correctCombo = false,
+        containsOne = false,
+        containsTwo = false,
+        containsThree = false,
+        containsFour = false,
+        containsFive = false,
+        containsSix = false,
+        sum = 0,
+        correctMatch = 0,
+        matchingPairs = [];
       if (this.rollsLeft < 3 && this.checkBottomValues(box)) {
         // if player have hit throw once and if box value is 0
         switch (box) {
           case 1: // one pair
+            for (let i = 1; i <= 6; i++) {
+              correctMatch = 0;
+              for (let j = 0; j < this.dices.length; j++) {
+                if (this.dices[j].number == i) {
+                  correctMatch++;
+                }
+                if (correctMatch > 1) {
+                  matchingPairs.push(i);
+                }
+              }
+            }
+            if (matchingPairs.length > 0 || matchingPairs != undefined) {
+              matchingPairs.sort(function(a, b) {
+                return b - a;
+              });
+              sum = matchingPairs[0];
+              this.valueOnePair = sum + sum;
+              correctCombo = true;
+            }
             break;
 
           case 2: // two pair
@@ -691,11 +719,6 @@ export default {
             break;
 
           case 5: // small straight
-            let containsOne = false,
-              containsTwo = false,
-              containsThree = false,
-              containsFour = false,
-              containsFive = false;
             for (let i = 0; i < this.dices.length; i++) {
               if (this.dices[i].number == 1) {
                 containsOne = true;
@@ -722,11 +745,6 @@ export default {
             break;
 
           case 6: // large straight
-            containsTwo = false;
-            containsThree = false;
-            containsFour = false;
-            containsFive = false;
-            let containsSix = false;
             for (let i = 0; i < this.dices.length; i++) {
               if (this.dices[i].number == 2) {
                 containsTwo = true;
@@ -756,9 +774,23 @@ export default {
             break;
 
           case 8: // chance
+            for (let i = 0; i < this.dices.length; i++) {
+              sum += this.dices[i].number;
+            }
+            correctCombo = true;
+            this.valueChance = sum;
             break;
 
           case 9: // yahtzee
+            for (let i = 1; i < this.dices.length; i++) {
+              if (this.dices[0].number == this.dices[i].number) {
+                correctMatch++;
+              }
+            }
+            if (correctMatch == 4) {
+              correctCombo = true;
+              this.valueYahtzee = 50;
+            }
             break;
 
           default:
