@@ -683,7 +683,7 @@ export default {
         containsSix = false,
         sum = 0,
         correctMatch = 0,
-        matchingPairs = [];
+        matchingNumbers = [];
       if (this.rollsLeft < 3 && this.checkBottomValues(box)) {
         // if player have hit throw once and if box value is 0
         switch (box) {
@@ -694,16 +694,16 @@ export default {
                 if (this.dices[j].number == i) {
                   correctMatch++;
                 }
-                if (correctMatch > 1 && !matchingPairs.includes(i)) {
-                  matchingPairs.push(i);
+                if (correctMatch > 1 && !matchingNumbers.includes(i)) {
+                  matchingNumbers.push(i);
                 }
               }
             }
-            if (matchingPairs.length > 0) {
-              matchingPairs.sort(function(a, b) {
+            if (matchingNumbers.length > 0) {
+              matchingNumbers.sort(function(a, b) {
                 return b - a;
               });
-              this.valueOnePair = matchingPairs[0] * 2;
+              this.valueOnePair = matchingNumbers[0] * 2;
               correctCombo = true;
             }
             break;
@@ -715,28 +715,64 @@ export default {
                 if (this.dices[j].number == i) {
                   correctMatch++;
                 }
-                if (correctMatch > 1 && !matchingPairs.includes(i)) {
-                  matchingPairs.push(i);
+                if (correctMatch > 1 && !matchingNumbers.includes(i)) {
+                  matchingNumbers.push(i);
                 }
               }
             }
-            if (matchingPairs.length > 1) {
-              matchingPairs.sort(function(a, b) {
+            if (matchingNumbers.length > 1) {
+              matchingNumbers.sort(function(a, b) {
                 return b - a;
               });
               this.valueTwoPair =
-                matchingPairs[0] +
-                matchingPairs[0] +
-                matchingPairs[1] +
-                matchingPairs[1];
+                matchingNumbers[0] +
+                matchingNumbers[0] +
+                matchingNumbers[1] +
+                matchingNumbers[1];
               correctCombo = true;
             }
             break;
 
           case 3: // three of a kind
+            for (let i = 1; i <= 6; i++) {
+              correctMatch = 0;
+              for (let j = 0; j < this.dices.length; j++) {
+                if (this.dices[j].number == i) {
+                  correctMatch++;
+                }
+                if (correctMatch > 2 && !matchingNumbers.includes(i)) {
+                  matchingNumbers.push(i);
+                }
+              }
+            }
+            if (matchingNumbers.length > 0) {
+              matchingNumbers.sort(function(a, b) {
+                return b - a;
+              });
+              this.valueThreeOfaKind = matchingNumbers[0] * 3;
+              correctCombo = true;
+            }
             break;
 
           case 4: // four of a kind
+            for (let i = 1; i <= 6; i++) {
+              correctMatch = 0;
+              for (let j = 0; j < this.dices.length; j++) {
+                if (this.dices[j].number == i) {
+                  correctMatch++;
+                }
+                if (correctMatch > 3 && !matchingNumbers.includes(i)) {
+                  matchingNumbers.push(i);
+                }
+              }
+            }
+            if (matchingNumbers.length > 0) {
+              matchingNumbers.sort(function(a, b) {
+                return b - a;
+              });
+              this.valueFourOfaKind = matchingNumbers[0] * 4;
+              correctCombo = true;
+            }
             break;
 
           case 5: // small straight
@@ -792,6 +828,31 @@ export default {
             break;
 
           case 7: // fullhouse
+            for (let i = 1; i <= 6; i++) {
+              correctMatch = 0;
+              for (let j = 0; j < this.dices.length; j++) {
+                if (this.dices[j].number == i) {
+                  correctMatch++;
+                }
+                if (
+                  j == this.dices.length - 1 &&
+                  !matchingNumbers.includes(correctMatch) &&
+                  correctMatch != 0
+                ) {
+                  matchingNumbers.push(correctMatch);
+                }
+              }
+            }
+            if (
+              matchingNumbers.length > 1 &&
+              matchingNumbers[0] + matchingNumbers[1] == 5
+            ) {
+              for (let i = 0; i < this.dices.length; i++) {
+                sum += this.dices[i].number;
+              }
+              this.valueFullHouse = sum;
+              correctCombo = true;
+            }
             break;
 
           case 8: // chance
