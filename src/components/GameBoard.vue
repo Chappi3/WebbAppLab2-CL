@@ -694,22 +694,43 @@ export default {
                 if (this.dices[j].number == i) {
                   correctMatch++;
                 }
-                if (correctMatch > 1) {
+                if (correctMatch > 1 && !matchingPairs.includes(i)) {
                   matchingPairs.push(i);
                 }
               }
             }
-            if (matchingPairs.length > 0 || matchingPairs != undefined) {
+            if (matchingPairs.length > 0) {
               matchingPairs.sort(function(a, b) {
                 return b - a;
               });
-              sum = matchingPairs[0];
-              this.valueOnePair = sum + sum;
+              this.valueOnePair = matchingPairs[0] * 2;
               correctCombo = true;
             }
             break;
 
           case 2: // two pair
+            for (let i = 1; i <= 6; i++) {
+              correctMatch = 0;
+              for (let j = 0; j < this.dices.length; j++) {
+                if (this.dices[j].number == i) {
+                  correctMatch++;
+                }
+                if (correctMatch > 1 && !matchingPairs.includes(i)) {
+                  matchingPairs.push(i);
+                }
+              }
+            }
+            if (matchingPairs.length > 1) {
+              matchingPairs.sort(function(a, b) {
+                return b - a;
+              });
+              this.valueTwoPair =
+                matchingPairs[0] +
+                matchingPairs[0] +
+                matchingPairs[1] +
+                matchingPairs[1];
+              correctCombo = true;
+            }
             break;
 
           case 3: // three of a kind
