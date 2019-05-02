@@ -188,6 +188,7 @@
                 v-model="valueOnePair"
                 @mouseenter="legendPair = !legendPair"
                 @mouseleave="legendPair = !legendPair"
+                @click="bottomSection(1)"
               >
               <label
                 for="two-pair"
@@ -202,6 +203,7 @@
                 v-model="valueTwoPair"
                 @mouseenter="legendPair = !legendPair"
                 @mouseleave="legendPair = !legendPair"
+                @click="bottomSection(2)"
               >
               <label
                 for="three-of-a-kind"
@@ -216,6 +218,7 @@
                 v-model="valueThreeOfaKind"
                 @mouseenter="legendOfaKind = !legendOfaKind"
                 @mouseleave="legendOfaKind = !legendOfaKind"
+                @click="bottomSection(3)"
               >
               <label
                 for="four-of-a-kind"
@@ -230,6 +233,7 @@
                 v-model="valueFourOfaKind"
                 @mouseenter="legendOfaKind = !legendOfaKind"
                 @mouseleave="legendOfaKind = !legendOfaKind"
+                @click="bottomSection(4)"
               >
               <label
                 for="smallStraight"
@@ -244,6 +248,7 @@
                 v-model="valueSmallStraight"
                 @mouseenter="legendSmallStraight = !legendSmallStraight"
                 @mouseleave="legendSmallStraight = !legendSmallStraight"
+                @click="bottomSection(5)"
               >
               <label
                 for="largeStraight"
@@ -258,6 +263,7 @@
                 v-model="valueLargeStraight"
                 @mouseenter="legendLargeStraight = !legendLargeStraight"
                 @mouseleave="legendLargeStraight = !legendLargeStraight"
+                @click="bottomSection(6)"
               >
               <label
                 for="fullHouse"
@@ -272,6 +278,7 @@
                 v-model="valueFullHouse"
                 @mouseenter="legendFullHouse = !legendFullHouse"
                 @mouseleave="legendFullHouse = !legendFullHouse"
+                @click="bottomSection(7)"
               >
               <label
                 for="chance"
@@ -286,6 +293,7 @@
                 v-model="valueChance"
                 @mouseenter="legendChance = !legendChance"
                 @mouseleave="legendChance = !legendChance"
+                @click="bottomSection(8)"
               >
               <label
                 for="yahtzee-input"
@@ -300,10 +308,12 @@
                 v-model="valueYahtzee"
                 @mouseenter="legendYahtzee = !legendYahtzee"
                 @mouseleave="legendYahtzee = !legendYahtzee"
+                @click="bottomSection(9)"
               >
             </fieldset>
           </div>
-
+          <!-- hold: dices[0].saved == true, not working correctly
+          https://vuejs.org/v2/guide/class-and-style.html-->
           <div class="playerDice">
             <div
               class="die die1"
@@ -422,7 +432,8 @@ export default {
       rollsLeft: 3,
       round: 1,
       score: 0,
-      valueTopSection: 0
+      valueTopSection: 0,
+      valueBottomSection: 0
     };
   },
   methods: {
@@ -456,7 +467,7 @@ export default {
       }
       return containsNumber;
     },
-    checkValues: function(value) {
+    checkTopValues: function(value) {
       let isValueZero = false;
       switch (value) {
         case 1:
@@ -496,7 +507,70 @@ export default {
           break;
 
         default:
-          console.log("checkValues - Switch - Something went wrong!");
+          console.log("checkTopValues - Switch - Something went wrong!");
+          break;
+      }
+      return isValueZero;
+    },
+    checkBottomValues: function(box) {
+      let isValueZero = false;
+      switch (box) {
+        case 1: // one pair
+          if (this.valueOnePair === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 2: // two pair
+          if (this.valueTwoPair === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 3: // three of a kind
+          if (this.valueThreeOfaKind === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 4: // four of a kind
+          if (this.valueFourOfaKind === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 5: // small straight
+          if (this.valueSmallStraight === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 6: // large straight
+          if (this.valueLargeStraight === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 7: // fullhouse
+          if (this.valueFullHouse === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 8: // chance
+          if (this.valueChance === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        case 9: // yahtzee
+          if (this.valueYahtzee === 0) {
+            isValueZero = true;
+          }
+          break;
+
+        default:
+          console.log("bottomSection - switch - Something went wrong!");
           break;
       }
       return isValueZero;
@@ -523,19 +597,28 @@ export default {
         this.valueSixes +
         this.valueBonus;
     },
+    calculateBottomSection: function() {
+      this.valueBottomSection =
+        this.valueOnePair +
+        this.valueTwoPair +
+        this.valueThreeOfaKind +
+        this.valueFourOfaKind +
+        this.valueSmallStraight +
+        this.valueLargeStraight +
+        this.valueFullHouse +
+        this.valueChance +
+        this.valueYahtzee;
+    },
     calculateTotalScore: function() {
       this.calculateTopSection();
-      //this.calculateBottomSection();
-      this.score = this.valueTopSection;
+      this.calculateBottomSection();
+      this.score = this.valueTopSection + this.valueBottomSection;
     },
     topSection: function(value) {
-      // If player have hit throw once
-      // If the clicked box value is zero
-      // If any of the dices have the same number as the box clicked
       if (
-        this.rollsLeft < 3 &&
-        this.checkValues(value) &&
-        this.checkDices(value)
+        this.rollsLeft < 3 && // If player have hit throw once
+        this.checkTopValues(value) && // If the clicked box value is zero
+        this.checkDices(value) // If any dices is the same number as the box clicked
       ) {
         let sum = 0;
         for (let i = 0; i < 5; i++) {
@@ -587,6 +670,107 @@ export default {
         this.calculateBonus();
         this.resetSelectedDices();
         this.calculateTotalScore();
+      }
+    },
+    bottomSection: function(box) {
+      // Todo: one pair, two pair, three kind, four kind, large, house, chance & yatzy
+      let correctCombo = false;
+      if (this.rollsLeft < 3 && this.checkBottomValues(box)) {
+        // if player have hit throw once and if box value is 0
+        switch (box) {
+          case 1: // one pair
+            break;
+
+          case 2: // two pair
+            break;
+
+          case 3: // three of a kind
+            break;
+
+          case 4: // four of a kind
+            break;
+
+          case 5: // small straight
+            let containsOne = false,
+              containsTwo = false,
+              containsThree = false,
+              containsFour = false,
+              containsFive = false;
+            for (let i = 0; i < this.dices.length; i++) {
+              if (this.dices[i].number == 1) {
+                containsOne = true;
+              } else if (this.dices[i].number == 2) {
+                containsTwo = true;
+              } else if (this.dices[i].number == 3) {
+                containsThree = true;
+              } else if (this.dices[i].number == 4) {
+                containsFour = true;
+              } else if (this.dices[i].number == 5) {
+                containsFive = true;
+              }
+            }
+            if (
+              containsOne &&
+              containsTwo &&
+              containsThree &&
+              containsFour &&
+              containsFive
+            ) {
+              correctCombo = true;
+              this.valueSmallStraight = 15;
+            }
+            break;
+
+          case 6: // large straight
+            containsTwo = false;
+            containsThree = false;
+            containsFour = false;
+            containsFive = false;
+            let containsSix = false;
+            for (let i = 0; i < this.dices.length; i++) {
+              if (this.dices[i].number == 2) {
+                containsTwo = true;
+              } else if (this.dices[i].number == 3) {
+                containsThree = true;
+              } else if (this.dices[i].number == 4) {
+                containsFour = true;
+              } else if (this.dices[i].number == 5) {
+                containsFive = true;
+              } else if (this.dices[i].number == 6) {
+                containsSix = true;
+              }
+            }
+            if (
+              containsTwo &&
+              containsThree &&
+              containsFour &&
+              containsFive &&
+              containsSix
+            ) {
+              correctCombo = true;
+              this.valueLargeStraight = 20;
+            }
+            break;
+
+          case 7: // fullhouse
+            break;
+
+          case 8: // chance
+            break;
+
+          case 9: // yahtzee
+            break;
+
+          default:
+            console.log("bottomSection - switch - Something went wrong!");
+            break;
+        }
+        if (correctCombo) {
+          this.rollsLeft = 3;
+          this.round++;
+          this.resetSelectedDices();
+          this.calculateTotalScore();
+        }
       }
     }
   }
