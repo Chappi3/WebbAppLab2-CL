@@ -312,42 +312,20 @@
               >
             </fieldset>
           </div>
-          <!-- hold: dices[0].saved == true, not working correctly
-          https://vuejs.org/v2/guide/class-and-style.html-->
           <div class="playerDice">
-            <div
-              class="die die1"
-              :class="{hold: dices[0].saved == true, roll1: dices[0].number == 1, roll2: dices[0].number == 2, roll3: dices[0].number == 3, roll4: dices[0].number == 4, roll5: dices[0].number == 5, roll6: dices[0].number == 6}"
-              @click="selectDice(0)"
-            >
+            <div class="die die1" :class="classDice1" @click="selectDice(0)">
               <span class="dot"></span>
             </div>
-            <div
-              class="die die2"
-              :class="{hold: dices[1].saved == true, roll1: dices[1].number == 1, roll2: dices[1].number == 2, roll3: dices[1].number == 3, roll4: dices[1].number == 4, roll5: dices[1].number == 5, roll6: dices[1].number == 6}"
-              @click="selectDice(1)"
-            >
+            <div class="die die2" :class="classDice2" @click="selectDice(1)">
               <span class="dot"></span>
             </div>
-            <div
-              class="die die3"
-              :class="{hold: dices[2].saved == true, roll1: dices[2].number == 1, roll2: dices[2].number == 2, roll3: dices[2].number == 3, roll4: dices[2].number == 4, roll5: dices[2].number == 5, roll6: dices[2].number == 6}"
-              @click="selectDice(2)"
-            >
+            <div class="die die3" :class="classDice3" @click="selectDice(2)">
               <span class="dot"></span>
             </div>
-            <div
-              class="die die4"
-              :class="{hold: dices[3].saved == true, roll1: dices[3].number == 1, roll2: dices[3].number == 2, roll3: dices[3].number == 3, roll4: dices[3].number == 4, roll5: dices[3].number == 5, roll6: dices[3].number == 6}"
-              @click="selectDice(3)"
-            >
+            <div class="die die4" :class="classDice4" @click="selectDice(3)">
               <span class="dot"></span>
             </div>
-            <div
-              class="die die5"
-              :class="{hold: dices[4].saved == true, roll1: dices[4].number == 1, roll2: dices[4].number == 2, roll3: dices[4].number == 3, roll4: dices[4].number == 4, roll5: dices[4].number == 5, roll6: dices[4].number == 6}"
-              @click="selectDice(4)"
-            >
+            <div class="die die5" :class="classDice5" @click="selectDice(4)">
               <span class="dot"></span>
             </div>
             <div>
@@ -435,6 +413,63 @@ export default {
       valueTopSection: 0,
       valueBottomSection: 0
     };
+  },
+  computed: {
+    classDice1: function() {
+      return {
+        hold: this.dices[0].saved,
+        roll1: this.dices[0].number == 1,
+        roll2: this.dices[0].number == 2,
+        roll3: this.dices[0].number == 3,
+        roll4: this.dices[0].number == 4,
+        roll5: this.dices[0].number == 5,
+        roll6: this.dices[0].number == 6
+      };
+    },
+    classDice2: function() {
+      return {
+        hold: this.dices[1].saved,
+        roll1: this.dices[1].number == 1,
+        roll2: this.dices[1].number == 2,
+        roll3: this.dices[1].number == 3,
+        roll4: this.dices[1].number == 4,
+        roll5: this.dices[1].number == 5,
+        roll6: this.dices[1].number == 6
+      };
+    },
+    classDice3: function() {
+      return {
+        hold: this.dices[2].saved,
+        roll1: this.dices[2].number == 1,
+        roll2: this.dices[2].number == 2,
+        roll3: this.dices[2].number == 3,
+        roll4: this.dices[2].number == 4,
+        roll5: this.dices[2].number == 5,
+        roll6: this.dices[2].number == 6
+      };
+    },
+    classDice4: function() {
+      return {
+        hold: this.dices[3].saved,
+        roll1: this.dices[3].number == 1,
+        roll2: this.dices[3].number == 2,
+        roll3: this.dices[3].number == 3,
+        roll4: this.dices[3].number == 4,
+        roll5: this.dices[3].number == 5,
+        roll6: this.dices[3].number == 6
+      };
+    },
+    classDice5: function() {
+      return {
+        hold: this.dices[4].saved,
+        roll1: this.dices[4].number == 1,
+        roll2: this.dices[4].number == 2,
+        roll3: this.dices[4].number == 3,
+        roll4: this.dices[4].number == 4,
+        roll5: this.dices[4].number == 5,
+        roll6: this.dices[4].number == 6
+      };
+    }
   },
   methods: {
     selectDice: function(dice) {
@@ -673,7 +708,6 @@ export default {
       }
     },
     bottomSection: function(box) {
-      // Todo: one pair, two pair, three kind, four kind, house & yatzy
       let correctCombo = false,
         containsOne = false,
         containsTwo = false,
@@ -1014,7 +1048,7 @@ export default {
   box-shadow: 0px 5px 0 #ccc, 0 6px 3px #444, 0 10px 5px #999;
   background-image: linear-gradient(top, #fefefe, #f1f1f1 80%);
 }
-#yahtzee .playerBoard .playerDice .die .hold {
+#yahtzee .playerBoard .playerDice .die.hold {
   box-shadow: 0px 5px 0 #ccc, 0 6px 3px #444, 0 10px 5px #999;
   background-image: linear-gradient(top, #fefefe, #ccc 80%);
   width: 46px;
