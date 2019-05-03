@@ -2,7 +2,7 @@
   <div class="footer">
     <footer>
       <p>Made by Tonny Frisk</p>
-      <a href="https://vuejs.org/">
+      <a href="https://vuejs.org/" target="_blank">
         <img alt="Vue logo" src="../../assets/logo.png" width="50px" height="50px">
       </a>
     </footer>

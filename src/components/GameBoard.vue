@@ -269,7 +269,7 @@
                 for="fullHouse"
                 @mouseenter="legendFullHouse = !legendFullHouse"
                 @mouseleave="legendFullHouse = !legendFullHouse"
-              >kåk</label>
+              >Kåk</label>
               <input
                 type="number"
                 id="fullHouse"
@@ -851,6 +851,7 @@ export default {
                 return b - a;
               });
               this.valueOnePair = matchingNumbers[0] * 2;
+              correctCombo = true;
             }
             break;
 
@@ -875,6 +876,7 @@ export default {
                 matchingNumbers[0] +
                 matchingNumbers[1] +
                 matchingNumbers[1];
+              correctCombo = true;
             }
             break;
 
@@ -895,6 +897,7 @@ export default {
                 return b - a;
               });
               this.valueThreeOfaKind = matchingNumbers[0] * 3;
+              correctCombo = true;
             }
             break;
 
@@ -915,6 +918,7 @@ export default {
                 return b - a;
               });
               this.valueFourOfaKind = matchingNumbers[0] * 4;
+              correctCombo = true;
             }
             break;
 
@@ -940,6 +944,7 @@ export default {
               containsFive
             ) {
               this.valueSmallStraight = 15;
+              correctCombo = true;
             }
             break;
 
@@ -965,6 +970,7 @@ export default {
               containsSix
             ) {
               this.valueLargeStraight = 20;
+              correctCombo = true;
             }
             break;
 
@@ -992,6 +998,7 @@ export default {
                 sum += this.dices[i].number;
               }
               this.valueFullHouse = sum;
+              correctCombo = true;
             }
             break;
 
@@ -1000,6 +1007,7 @@ export default {
               sum += this.dices[i].number;
             }
             this.valueChance = sum;
+            correctCombo = true;
             break;
 
           case 9: // yahtzee
@@ -1010,6 +1018,7 @@ export default {
             }
             if (correctMatch == 4) {
               this.valueYahtzee = 50;
+              correctCombo = true;
             }
             break;
 
@@ -1017,10 +1026,12 @@ export default {
             console.log("bottomSection - switch - Something went wrong!");
             break;
         }
-        this.nextRound();
-        this.rollsLeft = 3;
-        this.resetSelectedDices();
-        this.calculateTotalScore();
+        if (correctCombo) {
+          this.nextRound();
+          this.rollsLeft = 3;
+          this.resetSelectedDices();
+          this.calculateTotalScore();
+        }
       } else if (this.noScore && this.checkBottomValues(box)) {
         sum = 0;
         switch (box) {
