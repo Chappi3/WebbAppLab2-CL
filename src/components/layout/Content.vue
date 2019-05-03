@@ -2,10 +2,24 @@
   <div class="content" id="app">
     <div v-if="players.length<1">
       <Players :players="players"/>
-      <AddPlayer v-on:add-player="addPlayer" class="addPlayers"/>
+      <AddPlayer @add-player="addPlayer" class="addPlayers"/>
     </div>
     <div v-if="players.length>0">
-      <GameBoard :players="players"/>
+      <GameBoard
+        :players="players"
+        :round="round"
+        @next-round="nextRound"
+        v-if="round<16"
+        @transfer-score="getScore"
+      />
+    </div>
+    <div v-if="round>15">
+      <div>
+        <h1>Dina poäng: {{ score }}</h1>
+      </div>
+      <div>
+        <button @click="resetGame">Spela igen!</button>
+      </div>
     </div>
   </div>
 </template>
@@ -26,12 +40,25 @@ export default {
   },
   data() {
     return {
-      players: []
+      players: [],
+      round: 1,
+      score: 0
     };
   },
   methods: {
     addPlayer(newPlayer) {
       this.players = [...this.players, newPlayer];
+    },
+    nextRound() {
+      this.round++;
+    },
+    getScore(recievedScore) {
+      this.score = recievedScore;
+    },
+    resetGame() {
+      this.players = [];
+      this.round = 1;
+      this.score = 0;
     }
   }
 };

@@ -359,7 +359,7 @@ export default {
   components: {
     Player
   },
-  props: ["players"],
+  props: ["players", "round"],
   data() {
     return {
       legendOnes: false,
@@ -415,7 +415,6 @@ export default {
         }
       ],
       rollsLeft: 3,
-      round: 1,
       score: 0,
       valueTopSection: 0,
       valueBottomSection: 0,
@@ -480,6 +479,12 @@ export default {
     }
   },
   methods: {
+    nextRound: function() {
+      this.$emit("next-round");
+    },
+    sendScore: function(score) {
+      this.$emit("transfer-score", score);
+    },
     selectDice: function(dice) {
       if (this.rollsLeft < 3) {
         this.dices[dice].saved = !this.dices[dice].saved;
@@ -677,6 +682,55 @@ export default {
       this.calculateTopSection();
       this.calculateBottomSection();
       this.score = this.valueTopSection + this.valueBottomSection;
+      this.sendScore(this.score);
+      if (this.round == 16) {
+        this.resetGame();
+      }
+    },
+    resetGame: function() {
+      this.valueOnes = "";
+      this.valueTwos = "";
+      this.valueThrees = "";
+      this.valueFours = "";
+      this.valueFives = "";
+      this.valueSixes = "";
+      this.valueBonus = 0;
+      this.valueOnePair = "";
+      this.valueTwoPair = "";
+      this.valueThreeOfaKind = "";
+      this.valueFourOfaKind = "";
+      this.valueSmallStraight = "";
+      this.valueLargeStraight = "";
+      this.valueFullHouse = "";
+      this.valueChance = "";
+      this.valueYahtzee = "";
+      this.dices = [
+        {
+          number: 0,
+          saved: false
+        },
+        {
+          number: 0,
+          saved: false
+        },
+        {
+          number: 0,
+          saved: false
+        },
+        {
+          number: 0,
+          saved: false
+        },
+        {
+          number: 0,
+          saved: false
+        }
+      ];
+      this.rollsLeft = 3;
+      this.score = 0;
+      this.valueTopSection = 0;
+      this.valueBottomSection = 0;
+      this.noScore = false;
     },
     topSection: function(value) {
       if (
@@ -693,38 +747,26 @@ export default {
         }
         switch (value) {
           case 1:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueOnes = sum;
             break;
 
           case 2:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueTwos = sum;
             break;
 
           case 3:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueThrees = sum;
             break;
 
           case 4:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueFours = sum;
             break;
 
           case 5:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueFives = sum;
             break;
 
           case 6:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueSixes = sum;
             break;
 
@@ -732,6 +774,8 @@ export default {
             console.log("topSection - Switch - Something went wrong!");
             break;
         }
+        this.nextRound();
+        this.rollsLeft = 3;
         this.calculateBonus();
         this.resetSelectedDices();
         this.calculateTotalScore();
@@ -739,38 +783,26 @@ export default {
         let sum = 0;
         switch (value) {
           case 1:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueOnes = sum;
             break;
 
           case 2:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueTwos = sum;
             break;
 
           case 3:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueThrees = sum;
             break;
 
           case 4:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueFours = sum;
             break;
 
           case 5:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueFives = sum;
             break;
 
           case 6:
-            this.rollsLeft = 3;
-            this.round++;
             this.valueSixes = sum;
             break;
 
@@ -780,6 +812,8 @@ export default {
             );
             break;
         }
+        this.nextRound();
+        this.rollsLeft = 3;
         this.calculateBonus();
         this.resetSelectedDices();
         this.calculateTotalScore();
@@ -983,8 +1017,8 @@ export default {
             console.log("bottomSection - switch - Something went wrong!");
             break;
         }
+        this.nextRound();
         this.rollsLeft = 3;
-        this.round++;
         this.resetSelectedDices();
         this.calculateTotalScore();
       } else if (this.noScore && this.checkBottomValues(box)) {
@@ -1031,8 +1065,8 @@ export default {
             break;
         }
         this.noScore = false;
+        this.nextRound();
         this.rollsLeft = 3;
-        this.round++;
         this.resetSelectedDices();
         this.calculateTotalScore();
       }
