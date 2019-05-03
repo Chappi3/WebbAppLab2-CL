@@ -336,6 +336,13 @@
                 v-if="rollsLeft>0"
               >Kasta</button>
             </div>
+            <div v-if="rollsLeft == 0">
+              Stryka
+              <label class="switch">
+                <input type="checkbox" @click="noScore = !noScore">
+                <span class="slider"></span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -356,35 +363,35 @@ export default {
   data() {
     return {
       legendOnes: false,
-      valueOnes: 0,
+      valueOnes: "",
       legendTwos: false,
-      valueTwos: 0,
+      valueTwos: "",
       legendThrees: false,
-      valueThrees: 0,
+      valueThrees: "",
       legendFours: false,
-      valueFours: 0,
+      valueFours: "",
       legendFives: false,
-      valueFives: 0,
+      valueFives: "",
       legendSixes: false,
-      valueSixes: 0,
+      valueSixes: "",
       legendBonus: false,
       valueBonus: 0,
       legendPair: false,
-      valueOnePair: 0,
-      valueTwoPair: 0,
+      valueOnePair: "",
+      valueTwoPair: "",
       legendOfaKind: false,
-      valueThreeOfaKind: 0,
-      valueFourOfaKind: 0,
+      valueThreeOfaKind: "",
+      valueFourOfaKind: "",
       legendSmallStraight: false,
-      valueSmallStraight: 0,
+      valueSmallStraight: "",
       legendLargeStraight: false,
-      valueLargeStraight: 0,
+      valueLargeStraight: "",
       legendFullHouse: false,
-      valueFullHouse: 0,
+      valueFullHouse: "",
       legendChance: false,
-      valueChance: 0,
+      valueChance: "",
       legendYahtzee: false,
-      valueYahtzee: 0,
+      valueYahtzee: "",
       dices: [
         {
           number: 0,
@@ -411,7 +418,8 @@ export default {
       round: 1,
       score: 0,
       valueTopSection: 0,
-      valueBottomSection: 0
+      valueBottomSection: 0,
+      noScore: false
     };
   },
   computed: {
@@ -506,37 +514,37 @@ export default {
       let isValueZero = false;
       switch (value) {
         case 1:
-          if (this.valueOnes === 0) {
+          if (this.valueOnes === "") {
             isValueZero = true;
           }
           break;
 
         case 2:
-          if (this.valueTwos === 0) {
+          if (this.valueTwos === "") {
             isValueZero = true;
           }
           break;
 
         case 3:
-          if (this.valueThrees === 0) {
+          if (this.valueThrees === "") {
             isValueZero = true;
           }
           break;
 
         case 4:
-          if (this.valueFours === 0) {
+          if (this.valueFours === "") {
             isValueZero = true;
           }
           break;
 
         case 5:
-          if (this.valueFives === 0) {
+          if (this.valueFives === "") {
             isValueZero = true;
           }
           break;
 
         case 6:
-          if (this.valueSixes === 0) {
+          if (this.valueSixes === "") {
             isValueZero = true;
           }
           break;
@@ -551,55 +559,55 @@ export default {
       let isValueZero = false;
       switch (box) {
         case 1: // one pair
-          if (this.valueOnePair === 0) {
+          if (this.valueOnePair === "") {
             isValueZero = true;
           }
           break;
 
         case 2: // two pair
-          if (this.valueTwoPair === 0) {
+          if (this.valueTwoPair === "") {
             isValueZero = true;
           }
           break;
 
         case 3: // three of a kind
-          if (this.valueThreeOfaKind === 0) {
+          if (this.valueThreeOfaKind === "") {
             isValueZero = true;
           }
           break;
 
         case 4: // four of a kind
-          if (this.valueFourOfaKind === 0) {
+          if (this.valueFourOfaKind === "") {
             isValueZero = true;
           }
           break;
 
         case 5: // small straight
-          if (this.valueSmallStraight === 0) {
+          if (this.valueSmallStraight === "") {
             isValueZero = true;
           }
           break;
 
         case 6: // large straight
-          if (this.valueLargeStraight === 0) {
+          if (this.valueLargeStraight === "") {
             isValueZero = true;
           }
           break;
 
         case 7: // fullhouse
-          if (this.valueFullHouse === 0) {
+          if (this.valueFullHouse === "") {
             isValueZero = true;
           }
           break;
 
         case 8: // chance
-          if (this.valueChance === 0) {
+          if (this.valueChance === "") {
             isValueZero = true;
           }
           break;
 
         case 9: // yahtzee
-          if (this.valueYahtzee === 0) {
+          if (this.valueYahtzee === "") {
             isValueZero = true;
           }
           break;
@@ -611,38 +619,59 @@ export default {
       return isValueZero;
     },
     calculateBonus: function() {
-      let onesToSixes =
-        this.valueOnes +
-        this.valueTwos +
-        this.valueThrees +
-        this.valueFours +
-        this.valueFives +
-        this.valueSixes;
+      let valuesForBonus = [
+        this.valueOnes,
+        this.valueTwos,
+        this.valueThrees,
+        this.valueFours,
+        this.valueFives,
+        this.valueSixes
+      ];
+      let onesToSixes = 0;
+      for (let i = 0; i < valuesForBonus.length; i++) {
+        if (valuesForBonus[i] !== "") {
+          onesToSixes += valuesForBonus[i];
+        }
+      }
       if (onesToSixes >= 63) {
         this.valueBonus = 50;
       }
     },
     calculateTopSection: function() {
-      this.valueTopSection =
-        this.valueOnes +
-        this.valueTwos +
-        this.valueThrees +
-        this.valueFours +
-        this.valueFives +
-        this.valueSixes +
-        this.valueBonus;
+      let allValuesTop = [
+        this.valueOnes,
+        this.valueTwos,
+        this.valueThrees,
+        this.valueFours,
+        this.valueFives,
+        this.valueSixes,
+        this.valueBonus
+      ];
+      this.valueTopSection = 0;
+      for (let i = 0; i < allValuesTop.length; i++) {
+        if (allValuesTop[i] !== "") {
+          this.valueTopSection += allValuesTop[i];
+        }
+      }
     },
     calculateBottomSection: function() {
-      this.valueBottomSection =
-        this.valueOnePair +
-        this.valueTwoPair +
-        this.valueThreeOfaKind +
-        this.valueFourOfaKind +
-        this.valueSmallStraight +
-        this.valueLargeStraight +
-        this.valueFullHouse +
-        this.valueChance +
-        this.valueYahtzee;
+      let allValuesBottom = [
+        this.valueOnePair,
+        this.valueTwoPair,
+        this.valueThreeOfaKind,
+        this.valueFourOfaKind,
+        this.valueSmallStraight,
+        this.valueLargeStraight,
+        this.valueFullHouse,
+        this.valueChance,
+        this.valueYahtzee
+      ];
+      this.valueBottomSection = 0;
+      for (let i = 0; i < allValuesBottom.length; i++) {
+        if (allValuesBottom[i] !== "") {
+          this.valueBottomSection += allValuesBottom[i];
+        }
+      }
     },
     calculateTotalScore: function() {
       this.calculateTopSection();
@@ -653,7 +682,8 @@ export default {
       if (
         this.rollsLeft < 3 && // If player have hit throw once
         this.checkTopValues(value) && // If the clicked box value is zero
-        this.checkDices(value) // If any dices is the same number as the box clicked
+        this.checkDices(value) && // If any dices is the same number as the box clicked
+        !this.noScore // If noScore is false
       ) {
         let sum = 0;
         for (let i = 0; i < 5; i++) {
@@ -705,6 +735,55 @@ export default {
         this.calculateBonus();
         this.resetSelectedDices();
         this.calculateTotalScore();
+      } else if (this.noScore && this.checkTopValues(value)) {
+        let sum = 0;
+        switch (value) {
+          case 1:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueOnes = sum;
+            break;
+
+          case 2:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueTwos = sum;
+            break;
+
+          case 3:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueThrees = sum;
+            break;
+
+          case 4:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueFours = sum;
+            break;
+
+          case 5:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueFives = sum;
+            break;
+
+          case 6:
+            this.rollsLeft = 3;
+            this.round++;
+            this.valueSixes = sum;
+            break;
+
+          default:
+            console.log(
+              "topSection - Switch - noScore - Something went wrong!"
+            );
+            break;
+        }
+        this.calculateBonus();
+        this.resetSelectedDices();
+        this.calculateTotalScore();
+        this.noScore = false;
       }
     },
     bottomSection: function(box) {
@@ -718,7 +797,7 @@ export default {
         sum = 0,
         correctMatch = 0,
         matchingNumbers = [];
-      if (this.rollsLeft < 3 && this.checkBottomValues(box)) {
+      if (this.rollsLeft < 3 && this.checkBottomValues(box) && !this.noScore) {
         // if player have hit throw once and if box value is 0
         switch (box) {
           case 1: // one pair
@@ -738,7 +817,6 @@ export default {
                 return b - a;
               });
               this.valueOnePair = matchingNumbers[0] * 2;
-              correctCombo = true;
             }
             break;
 
@@ -763,7 +841,6 @@ export default {
                 matchingNumbers[0] +
                 matchingNumbers[1] +
                 matchingNumbers[1];
-              correctCombo = true;
             }
             break;
 
@@ -784,7 +861,6 @@ export default {
                 return b - a;
               });
               this.valueThreeOfaKind = matchingNumbers[0] * 3;
-              correctCombo = true;
             }
             break;
 
@@ -805,7 +881,6 @@ export default {
                 return b - a;
               });
               this.valueFourOfaKind = matchingNumbers[0] * 4;
-              correctCombo = true;
             }
             break;
 
@@ -830,7 +905,6 @@ export default {
               containsFour &&
               containsFive
             ) {
-              correctCombo = true;
               this.valueSmallStraight = 15;
             }
             break;
@@ -856,7 +930,6 @@ export default {
               containsFive &&
               containsSix
             ) {
-              correctCombo = true;
               this.valueLargeStraight = 20;
             }
             break;
@@ -885,7 +958,6 @@ export default {
                 sum += this.dices[i].number;
               }
               this.valueFullHouse = sum;
-              correctCombo = true;
             }
             break;
 
@@ -893,7 +965,6 @@ export default {
             for (let i = 0; i < this.dices.length; i++) {
               sum += this.dices[i].number;
             }
-            correctCombo = true;
             this.valueChance = sum;
             break;
 
@@ -904,7 +975,6 @@ export default {
               }
             }
             if (correctMatch == 4) {
-              correctCombo = true;
               this.valueYahtzee = 50;
             }
             break;
@@ -913,12 +983,58 @@ export default {
             console.log("bottomSection - switch - Something went wrong!");
             break;
         }
-        if (correctCombo) {
-          this.rollsLeft = 3;
-          this.round++;
-          this.resetSelectedDices();
-          this.calculateTotalScore();
+        this.rollsLeft = 3;
+        this.round++;
+        this.resetSelectedDices();
+        this.calculateTotalScore();
+      } else if (this.noScore && this.checkBottomValues(box)) {
+        sum = 0;
+        switch (box) {
+          case 1: // one pair
+            this.valueOnePair = sum;
+            break;
+
+          case 2: // two pair
+            this.valueTwoPair = sum;
+            break;
+
+          case 3: // three of a kind
+            this.valueThreeOfaKind = sum;
+            break;
+
+          case 4: // four of a kind
+            this.valueFourOfaKind = sum;
+            break;
+
+          case 5: // small straight
+            this.valueSmallStraight = sum;
+            break;
+
+          case 6: // large straight
+            this.valueLargeStraight = sum;
+            break;
+
+          case 7: // fullhouse
+            this.valueFullHouse = sum;
+            break;
+
+          case 8: // chance
+            this.valueChance = sum;
+            break;
+
+          case 9: // yahtzee
+            this.valueYahtzee = sum;
+            break;
+
+          default:
+            console.log("bottomSection - switch - Something went wrong!");
+            break;
         }
+        this.noScore = false;
+        this.rollsLeft = 3;
+        this.round++;
+        this.resetSelectedDices();
+        this.calculateTotalScore();
       }
     }
   }
@@ -1065,5 +1181,68 @@ export default {
   border-radius: 50%;
   display: block;
   position: absolute;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(75, 75, 75);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #d1d1d1;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #d1d1d1;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 </style>
