@@ -8,13 +8,13 @@
         <div class="playerBoard">
           <div class="playerHead">
             <h2>
-              <div :key="player.id" v-for="player in players">
+              <div :key="player.id" v-for="player in getPlayers">
                 <Player :player="player"/>
               </div>
             </h2>
-            <div>Runda: {{ round }}</div>
+            <div>Runda: {{ getRound }}</div>
             <div class="score">
-              <span>{{ score }}</span> poäng
+              <span>{{ getScore }}</span> poäng
             </div>
             <div class="clear"></div>
           </div>
@@ -301,6 +301,7 @@
 import Player from "./Player.vue";
 import GameLegend from "./GameLegend.vue";
 import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "GameBoard",
@@ -308,7 +309,6 @@ export default {
     Player,
     GameLegend
   },
-  props: ["players", "round"],
   data() {
     return {
       valueOnes: "",
@@ -357,6 +357,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["getPlayers", "getRound", "getScore"]),
     classDice1: function() {
       return {
         hold: this.dices[0].saved,
@@ -415,6 +416,8 @@ export default {
   },
   methods: {
     ...mapActions([
+      "increaseRound",
+      "setScore",
       "changeLegendOnes",
       "changeLegendTwos",
       "changeLegendThrees",
@@ -431,10 +434,10 @@ export default {
       "changeLegendYahtzee"
     ]),
     nextRound: function() {
-      this.$emit("next-round");
+      this.increaseRound();
     },
     sendScore: function(score) {
-      this.$emit("transfer-score", score);
+      this.setScore(score);
     },
     selectDice: function(dice) {
       if (this.rollsLeft < 3) {

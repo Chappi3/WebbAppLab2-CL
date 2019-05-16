@@ -5,6 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    players: [],
+    round: 1,
+    score: 0,
     legendOnes: false,
     legendTwos: false,
     legendThrees: false,
@@ -21,6 +24,9 @@ export default new Vuex.Store({
     legendYahtzee: false
   },
   getters: {
+    getPlayers: state => state.players,
+    getRound: state => state.round,
+    getScore: state => state.score,
     getLegendOnes: state => state.legendOnes,
     getLegendTwos: state => state.legendTwos,
     getLegendThrees: state => state.legendThrees,
@@ -37,6 +43,24 @@ export default new Vuex.Store({
     getLegendYahtzee: state => state.legendYahtzee
   },
   mutations: {
+    resetScore: state => {
+      state.score = 0;
+    },
+    resetRound: state => {
+      state.round = 1;
+    },
+    emptyPlayers: state => {
+      state.players = [];
+    },
+    addPlayerToPlayers: (state, payload) => {
+      state.players.push(payload);
+    },
+    increaseRound: state => {
+      state.round++;
+    },
+    setScore: (state, payload) => {
+      state.score = payload;
+    },
     changeLegendOnes: state => {
       state.legendOnes = !state.legendOnes;
     },
@@ -81,6 +105,24 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    resetScore: context => {
+      context.commit('resetScore');
+    },
+    resetRound: context => {
+      context.commit('resetRound');
+    },
+    emptyPlayers: context => {
+      context.commit('emptyPlayers');
+    },
+    addPlayerToPlayers: (context, payload) => {
+      context.commit('addPlayerToPlayers', payload);
+    },
+    increaseRound: context => {
+      context.commit('increaseRound');
+    },
+    setScore: (context, payload) => {
+      context.commit('setScore', payload);
+    },
     changeLegendOnes: context => {
       context.commit('changeLegendOnes');
     },

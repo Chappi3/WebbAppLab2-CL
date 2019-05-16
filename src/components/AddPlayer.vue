@@ -9,23 +9,24 @@
 
 <script>
 import uuid from "uuid";
+import { mapActions } from "vuex";
 
 export default {
   name: "AddPlayer",
-  props: ["players"],
   data() {
     return {
       name: ""
     };
   },
   methods: {
+    ...mapActions(["addPlayerToPlayers"]),
     addPlayer(e) {
       e.preventDefault();
       const newPlayer = {
         id: uuid.v4(),
         name: this.name
       };
-      this.$emit("add-player", newPlayer);
+      this.addPlayerToPlayers(newPlayer);
 
       this.name = "";
     }

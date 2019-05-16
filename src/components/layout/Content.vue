@@ -1,21 +1,14 @@
 <template>
   <div class="content" id="app">
-    <div v-if="players.length<1">
-      <Players :players="players"/>
-      <AddPlayer @add-player="addPlayer" class="addPlayers"/>
+    <div v-if="getPlayers.length<1">
+      <AddPlayer class="addPlayers"/>
     </div>
-    <div v-if="players.length>0">
-      <GameBoard
-        :players="players"
-        :round="round"
-        @next-round="nextRound"
-        v-if="round<16"
-        @transfer-score="getScore"
-      />
+    <div v-if="getPlayers.length>0">
+      <GameBoard v-if="getRound<16"/>
     </div>
-    <div v-if="round>15">
+    <div v-if="getRound>15">
       <div>
-        <h1>Dina poäng: {{ score }}</h1>
+        <h1>Dina poäng: {{ getScore }}</h1>
       </div>
       <div>
         <button @click="resetGame">Spela igen!</button>
@@ -30,6 +23,8 @@
 import Players from "../Players.vue";
 import AddPlayer from "../AddPlayer.vue";
 import GameBoard from "../GameBoard.vue";
+import { mapGetters } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   name: "Content",
@@ -38,27 +33,19 @@ export default {
     AddPlayer,
     GameBoard
   },
-  data() {
-    return {
-      players: [],
-      round: 1,
-      score: 0
-    };
-  },
+  computed: mapGetters(["getPlayers", "getRound", "getScore"]),
   methods: {
-    addPlayer(newPlayer) {
-      this.players = [...this.players, newPlayer];
-    },
+    ...mapActions(["emptyPlayers", "resetRound", "resetScore"]),
     nextRound() {
-      this.round++;
+      this.increaseRound();
     },
-    getScore(recievedScore) {
-      this.score = recievedScore;
+    setScore(recievedScore) {
+      this.setScore(recievedScore);
     },
     resetGame() {
-      this.players = [];
-      this.round = 1;
-      this.score = 0;
+      this.emptyPlayers();
+      this.resetRound();
+      this.resetScore();
     }
   }
 };
