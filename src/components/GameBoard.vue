@@ -2,53 +2,7 @@
   <div id="gameBoard">
     <div id="yahtzee">
       <aside id="gameLegend">
-        <dl>
-          <h2>Förklaringar</h2>
-          <dt v-if="legendOnes">Ettor</dt>
-          <dd v-if="legendOnes">max poäng 5</dd>
-          <dt v-if="legendTwos">Tvåor</dt>
-          <dd v-if="legendTwos">max poäng 10</dd>
-          <dt v-if="legendThrees">Treor</dt>
-          <dd v-if="legendThrees">max poäng 15</dd>
-          <dt v-if="legendFours">Fyror</dt>
-          <dd v-if="legendFours">max poäng 20</dd>
-          <dt v-if="legendFives">Femmor</dt>
-          <dd v-if="legendFives">max poäng 25</dd>
-          <dt v-if="legendSixes">Sexor</dt>
-          <dd v-if="legendSixes">max poäng 30</dd>
-          <dt v-if="legendBonus">Bonus</dt>
-          <dd
-            v-if="legendBonus"
-          >För att få bonus måste spelaren få minst 63 poäng i de sex översta villkoren (detta motsvarar i genomsnitt tre av varje villkor). Bonus ger alltid 50 poäng oavsett poängsumman</dd>
-          <dt v-if="legendPair">Ett par/Två par</dt>
-          <dd
-            v-if="legendPair"
-          >Summan av paret/paren räknas. OBS! Kastet 4-4-4-4-6 räknas inte som två par. Båda paren måste vara olika.</dd>
-          <dt v-if="legendOfaKind">Tretal/Fyrtal</dt>
-          <dd
-            v-if="legendOfaKind"
-          >Endast summan av lika tärningar räknas, t.ex.tre 4:or (=12 poäng) eller fyra 2:or (=8 poäng).</dd>
-          <dt v-if="legendSmallStraight">Liten stege</dt>
-          <dd
-            v-if="legendSmallStraight"
-          >För att få liten stege (stege ibland kallat straight) skall tärningarna visa siffrorna 1, 2, 3, 4 och 5. Detta ger 15 poäng.</dd>
-          <dt v-if="legendLargeStraight">Stor stege</dt>
-          <dd
-            v-if="legendLargeStraight"
-          >För att få stor stege skall tärningarna visa siffrorna 2, 3, 4, 5 och 6. Detta ger 20 poäng.</dd>
-          <dt v-if="legendFullHouse">Kåk</dt>
-          <dd
-            v-if="legendFullHouse"
-          >För att få kåk skall tre av tärningarna visa ett och samma tal, samtidigt som övriga två ska visa ett och samma tal. Exempelvis 6, 6, 6, 4 och 4.</dd>
-          <dt v-if="legendChance">Chans</dt>
-          <dd
-            v-if="legendChance"
-          >Chans innebär att man ska få så högt tal som möjligt när samtliga tärningsprickar räknas samman.</dd>
-          <dt v-if="legendYahtzee">Yatzy</dt>
-          <dd
-            v-if="legendYahtzee"
-          >För att få yatzy skall alla tärningarna visa lika siffror. Yatzy ger alltid 50 poäng oavsett vilken siffra som tärningarna visar.</dd>
-        </dl>
+        <GameLegend/>
       </aside>
       <div id="playerArea">
         <div class="playerBoard">
@@ -67,40 +21,32 @@
           <div class="playerCard">
             <fieldset>
               <legend>Övre Sektion</legend>
-              <label
-                for="ones"
-                @mouseenter="legendOnes = !legendOnes"
-                @mouseleave="legendOnes = !legendOnes"
-              >Ettor</label>
+              <label for="ones" @mouseenter="changeLegendOnes" @mouseleave="changeLegendOnes">Ettor</label>
               <input
                 type="number"
                 id="ones"
                 name="ones"
                 readonly="true"
                 v-model="valueOnes"
-                @mouseenter="legendOnes = !legendOnes"
-                @mouseleave="legendOnes = !legendOnes"
+                @mouseenter="changeLegendOnes"
+                @mouseleave="changeLegendOnes"
                 @click="topSection(1)"
               >
-              <label
-                for="twos"
-                @mouseenter="legendTwos = !legendTwos"
-                @mouseleave="legendTwos = !legendTwos"
-              >Tvåor</label>
+              <label for="twos" @mouseenter="changeLegendTwos" @mouseleave="changeLegendTwos">Tvåor</label>
               <input
                 type="number"
                 id="twos"
                 name="twos"
                 readonly="true"
                 v-model="valueTwos"
-                @mouseenter="legendTwos = !legendTwos"
-                @mouseleave="legendTwos = !legendTwos"
+                @mouseenter="changeLegendTwos"
+                @mouseleave="changeLegendTwos"
                 @click="topSection(2)"
               >
               <label
                 for="threes"
-                @mouseenter="legendThrees = !legendThrees"
-                @mouseleave="legendThrees = !legendThrees"
+                @mouseenter="changeLegendThrees"
+                @mouseleave="changeLegendThrees"
               >Treor</label>
               <input
                 type="number"
@@ -108,14 +54,14 @@
                 name="threes"
                 readonly="true"
                 v-model="valueThrees"
-                @mouseenter="legendThrees = !legendThrees"
-                @mouseleave="legendThrees = !legendThrees"
+                @mouseenter="changeLegendThrees"
+                @mouseleave="changeLegendThrees"
                 @click="topSection(3)"
               >
               <label
                 for="fours"
-                @mouseenter="legendFours = !legendFours"
-                @mouseleave="legendFours = !legendFours"
+                @mouseenter="changeLegendFours"
+                @mouseleave="changeLegendFours"
               >Fyror</label>
               <input
                 type="number"
@@ -123,14 +69,14 @@
                 name="fours"
                 readonly="true"
                 v-model="valueFours"
-                @mouseenter="legendFours = !legendFours"
-                @mouseleave="legendFours = !legendFours"
+                @mouseenter="changeLegendFours"
+                @mouseleave="changeLegendFours"
                 @click="topSection(4)"
               >
               <label
                 for="fives"
-                @mouseenter="legendFives = !legendFives"
-                @mouseleave="legendFives = !legendFives"
+                @mouseenter="changeLegendFives"
+                @mouseleave="changeLegendFives"
               >Femmor</label>
               <input
                 type="number"
@@ -138,14 +84,14 @@
                 name="fives"
                 readonly="true"
                 v-model="valueFives"
-                @mouseenter="legendFives = !legendFives"
-                @mouseleave="legendFives = !legendFives"
+                @mouseenter="changeLegendFives"
+                @mouseleave="changeLegendFives"
                 @click="topSection(5)"
               >
               <label
                 for="sixes"
-                @mouseenter="legendSixes = !legendSixes"
-                @mouseleave="legendSixes = !legendSixes"
+                @mouseenter="changeLegendSixes"
+                @mouseleave="changeLegendSixes"
               >Sexor</label>
               <input
                 type="number"
@@ -153,14 +99,14 @@
                 name="sixes"
                 readonly="true"
                 v-model="valueSixes"
-                @mouseenter="legendSixes = !legendSixes"
-                @mouseleave="legendSixes = !legendSixes"
+                @mouseenter="changeLegendSixes"
+                @mouseleave="changeLegendSixes"
                 @click="topSection(6)"
               >
               <label
                 for="bonus"
-                @mouseenter="legendBonus = !legendBonus"
-                @mouseleave="legendBonus = !legendBonus"
+                @mouseenter="changeLegendBonus"
+                @mouseleave="changeLegendBonus"
               >Bonus</label>
               <input
                 type="number"
@@ -168,8 +114,8 @@
                 name="bonus"
                 readonly="true"
                 v-model="valueBonus"
-                @mouseenter="legendBonus = !legendBonus"
-                @mouseleave="legendBonus = !legendBonus"
+                @mouseenter="changeLegendBonus"
+                @mouseleave="changeLegendBonus"
               >
             </fieldset>
 
@@ -177,8 +123,8 @@
               <legend>Nedre Sektion</legend>
               <label
                 for="one-pair"
-                @mouseenter="legendPair = !legendPair"
-                @mouseleave="legendPair = !legendPair"
+                @mouseenter="changeLegendPair"
+                @mouseleave="changeLegendPair"
               >Ett par</label>
               <input
                 type="number"
@@ -186,14 +132,14 @@
                 name="one-pair"
                 readonly="true"
                 v-model="valueOnePair"
-                @mouseenter="legendPair = !legendPair"
-                @mouseleave="legendPair = !legendPair"
+                @mouseenter="changeLegendPair"
+                @mouseleave="changeLegendPair"
                 @click="bottomSection(1)"
               >
               <label
                 for="two-pair"
-                @mouseenter="legendPair = !legendPair"
-                @mouseleave="legendPair = !legendPair"
+                @mouseenter="changeLegendPair"
+                @mouseleave="changeLegendPair"
               >Två par</label>
               <input
                 type="number"
@@ -201,14 +147,14 @@
                 name="two-pair"
                 readonly="true"
                 v-model="valueTwoPair"
-                @mouseenter="legendPair = !legendPair"
-                @mouseleave="legendPair = !legendPair"
+                @mouseenter="changeLegendPair"
+                @mouseleave="changeLegendPair"
                 @click="bottomSection(2)"
               >
               <label
                 for="three-of-a-kind"
-                @mouseenter="legendOfaKind = !legendOfaKind"
-                @mouseleave="legendOfaKind = !legendOfaKind"
+                @mouseenter="changeLegendOfaKind"
+                @mouseleave="changeLegendOfaKind"
               >Tretal</label>
               <input
                 type="number"
@@ -216,14 +162,14 @@
                 name="three-of-a-kind"
                 readonly="true"
                 v-model="valueThreeOfaKind"
-                @mouseenter="legendOfaKind = !legendOfaKind"
-                @mouseleave="legendOfaKind = !legendOfaKind"
+                @mouseenter="changeLegendOfaKind"
+                @mouseleave="changeLegendOfaKind"
                 @click="bottomSection(3)"
               >
               <label
                 for="four-of-a-kind"
-                @mouseenter="legendOfaKind = !legendOfaKind"
-                @mouseleave="legendOfaKind = !legendOfaKind"
+                @mouseenter="changeLegendOfaKind"
+                @mouseleave="changeLegendOfaKind"
               >Fyrtal</label>
               <input
                 type="number"
@@ -231,14 +177,14 @@
                 name="four-of-a-kind"
                 readonly="true"
                 v-model="valueFourOfaKind"
-                @mouseenter="legendOfaKind = !legendOfaKind"
-                @mouseleave="legendOfaKind = !legendOfaKind"
+                @mouseenter="changeLegendOfaKind"
+                @mouseleave="changeLegendOfaKind"
                 @click="bottomSection(4)"
               >
               <label
                 for="smallStraight"
-                @mouseenter="legendSmallStraight = !legendSmallStraight"
-                @mouseleave="legendSmallStraight = !legendSmallStraight"
+                @mouseenter="changeLegendSmallStraight"
+                @mouseleave="changeLegendSmallStraight"
               >Liten stege</label>
               <input
                 type="number"
@@ -246,14 +192,14 @@
                 name="smallStraight"
                 readonly="true"
                 v-model="valueSmallStraight"
-                @mouseenter="legendSmallStraight = !legendSmallStraight"
-                @mouseleave="legendSmallStraight = !legendSmallStraight"
+                @mouseenter="changeLegendSmallStraight"
+                @mouseleave="changeLegendSmallStraight"
                 @click="bottomSection(5)"
               >
               <label
                 for="largeStraight"
-                @mouseenter="legendLargeStraight = !legendLargeStraight"
-                @mouseleave="legendLargeStraight = !legendLargeStraight"
+                @mouseenter="changeLegendLargeStraight"
+                @mouseleave="changeLegendLargeStraight"
               >Stor stege</label>
               <input
                 type="number"
@@ -261,14 +207,14 @@
                 name="largeStraight"
                 readonly="true"
                 v-model="valueLargeStraight"
-                @mouseenter="legendLargeStraight = !legendLargeStraight"
-                @mouseleave="legendLargeStraight = !legendLargeStraight"
+                @mouseenter="changeLegendLargeStraight"
+                @mouseleave="changeLegendLargeStraight"
                 @click="bottomSection(6)"
               >
               <label
                 for="fullHouse"
-                @mouseenter="legendFullHouse = !legendFullHouse"
-                @mouseleave="legendFullHouse = !legendFullHouse"
+                @mouseenter="changeLegendFullHouse"
+                @mouseleave="changeLegendFullHouse"
               >Kåk</label>
               <input
                 type="number"
@@ -276,14 +222,14 @@
                 name="fullHouse"
                 readonly="true"
                 v-model="valueFullHouse"
-                @mouseenter="legendFullHouse = !legendFullHouse"
-                @mouseleave="legendFullHouse = !legendFullHouse"
+                @mouseenter="changeLegendFullHouse"
+                @mouseleave="changeLegendFullHouse"
                 @click="bottomSection(7)"
               >
               <label
                 for="chance"
-                @mouseenter="legendChance = !legendChance"
-                @mouseleave="legendChance = !legendChance"
+                @mouseenter="changeLegendChance"
+                @mouseleave="changeLegendChance"
               >Chans</label>
               <input
                 type="number"
@@ -291,14 +237,14 @@
                 name="chance"
                 readonly="true"
                 v-model="valueChance"
-                @mouseenter="legendChance = !legendChance"
-                @mouseleave="legendChance = !legendChance"
+                @mouseenter="changeLegendChance"
+                @mouseleave="changeLegendChance"
                 @click="bottomSection(8)"
               >
               <label
                 for="yahtzee-input"
-                @mouseenter="legendYahtzee = !legendYahtzee"
-                @mouseleave="legendYahtzee = !legendYahtzee"
+                @mouseenter="changeLegendYahtzee"
+                @mouseleave="changeLegendYahtzee"
               >Yatzy</label>
               <input
                 type="number"
@@ -306,8 +252,8 @@
                 name="yahtzee-input"
                 readonly="true"
                 v-model="valueYahtzee"
-                @mouseenter="legendYahtzee = !legendYahtzee"
-                @mouseleave="legendYahtzee = !legendYahtzee"
+                @mouseenter="changeLegendYahtzee"
+                @mouseleave="changeLegendYahtzee"
                 @click="bottomSection(9)"
               >
             </fieldset>
@@ -353,44 +299,33 @@
 
 <script>
 import Player from "./Player.vue";
+import GameLegend from "./GameLegend.vue";
+import { mapActions } from "vuex";
 
 export default {
   name: "GameBoard",
   components: {
-    Player
+    Player,
+    GameLegend
   },
   props: ["players", "round"],
   data() {
     return {
-      legendOnes: false,
       valueOnes: "",
-      legendTwos: false,
       valueTwos: "",
-      legendThrees: false,
       valueThrees: "",
-      legendFours: false,
       valueFours: "",
-      legendFives: false,
       valueFives: "",
-      legendSixes: false,
       valueSixes: "",
-      legendBonus: false,
       valueBonus: 0,
-      legendPair: false,
       valueOnePair: "",
       valueTwoPair: "",
-      legendOfaKind: false,
       valueThreeOfaKind: "",
       valueFourOfaKind: "",
-      legendSmallStraight: false,
       valueSmallStraight: "",
-      legendLargeStraight: false,
       valueLargeStraight: "",
-      legendFullHouse: false,
       valueFullHouse: "",
-      legendChance: false,
       valueChance: "",
-      legendYahtzee: false,
       valueYahtzee: "",
       dices: [
         {
@@ -479,6 +414,22 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      "changeLegendOnes",
+      "changeLegendTwos",
+      "changeLegendThrees",
+      "changeLegendFours",
+      "changeLegendFives",
+      "changeLegendSixes",
+      "changeLegendBonus",
+      "changeLegendPair",
+      "changeLegendOfaKind",
+      "changeLegendSmallStraight",
+      "changeLegendLargeStraight",
+      "changeLegendFullHouse",
+      "changeLegendChance",
+      "changeLegendYahtzee"
+    ]),
     nextRound: function() {
       this.$emit("next-round");
     },
